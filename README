@@ -1,0 +1,169 @@
+Nume: URECHE Andreea-Maria 
+Grupa: 312CC 
+
+-------------- TEMA 1 ----------------
+Liste dublu inlantuite , stive si cozi.
+
+Timp de implementare:~4 zile
+Punctaj obtinut la teste (pe calculator propriu): 
+Total: 100.0/100
+Valgrind: 20/20
+
+
+  Pentru rezolvarea acestei teme am definit mai multe tipuri de 
+structuri, dupa cum urmeaza:
+  Pentru a implementa coada in care voi retine operatiile de
+tip UPDATE am folosit o lista simplu inlantuita .
+ typedef struct queueNode -> defineste o structura de tip
+lista simplu inlantuita , unde nodul listei contine numele 
+operatiei ,un pointer (next) catre urmatorul nod si 
+un caracter (folosit pentru operatiile de INSERT_LEFT ,
+INSERT_RIGHT ,MOVE_LEFT_CHAR ,MOVE_RIGHT_CHAR,WRITE) .
+ typedef struct queue  -> definese front si rear-ul cozii .
+  
+  Pentru implementarea benzii impreuna cu degetul am folosit
+o structura de tip lista dublu inlantuita cu santinela.
+ typedef struct Node -> defineste un nod al listei ce contine 
+un pointer (next) catre urmatorul nod din lista , un
+pointer (prev) catre nodul precedent  si caracterul din celula 
+respectiva .
+ typedef struct List -> defineste lista dublu inlantuita cu 
+un pointer (sentinel) la Node ce reprezinta santinela ,
+adica primul nod din lista dar care nu contine date si marcheaza
+inceputul listei dublu inlantuite si un pointer (current) la Node
+ce reprezinta pozitia curenta din lista (sau mai precis , degetul benzii).
+
+  Pentru implementarea stivelor pentru operatii de tip UNDO / REDO
+am folosit de asemenea o lista simplu inlantuita :
+ typedef struct cell -> defineste o celula/nod al listei simplu
+inlantuite ce contine un pointer(next) catre urmatoarea celula/nod 
+si un pointer (elem) la Node ce va contine adresa catre nodul
+din lista dublu inalntuita(banda).
+
+Voi explica pe scurt functionalitatea fiecarei functii:
+
+  initQueue -> are ca rol initializarea cozii pentru
+operatiile de tip UPDATE si intoarce ca rezultat un 
+pointer catre Queue.
+  enqueue -> adauga operatiile de tip UPDATE in coada .
+  dequeue -> elimina o operatie de tip UPDATE din coada.
+  freeQueue -> elibereaza memoria alocata pe heap pentru coada.
+  initStack -> are ca rol initializarea unei stive. 
+  peek -> returneaza un pointer de tip Node pentru elementul 
+din varful stivei.
+  pop -> elimina un element din stiva si returneaza un 
+pointer la Tstack catre urmatorul element.
+  push -> adauga un element pe stiva. 
+  isEmptyStack -> testeaza daca stiva este goala.
+  freeStacks -> elibereaza memoria alocata pe heap pentru stiva.
+  initList -> initializeaza lista dublu inlantuita (banda) 
+cu santinela si adauga primul nod din lista ce contine date 
+(caracterul '#') , iar apoi actualizeaza pozitia degetului (current) 
+pe acest nod creat.
+  execute -> are ca rol executarea operatiilor de tip UPDATE la 
+intalnirea operatiei EXECUTE. Aceasta compara numele operatiei 
+de tip UPDATE care poate exista cu continutul din campul 'data' 
+al  primului element din coada si apeleaza functia corespunzatoare 
+pentru a executa operatia respectiva. In cazul in care operatia 
+necesita cautarea / inserarea unui caracter , salvam in 'ch' caracterul 
+respectiv , prin accesarea campului 'character' din elementul 
+cozii.
+
+ Pentru a tine cont de cazurile speciale care pot exista , am 
+ efectuat mai multe verificari :
+  -> Daca operatia este INSERT_LEFT , verificam daca ne 
+  aflam deja pe primul nod al benzii (adica elementul precedent 
+  este chiar santinela) . In cazul in care degetul (current)
+  nu se afla pe primul nod cu date din banda , putem
+  efectua operatia , iar in caz contrar , afisam mesajul
+  "ERROR".
+  -> Daca operatia este MOVE_RIGHT , verificam daca 
+  ne aflam pe ultimul nod al benzii (pointer-ul catre urmatorul nod
+  indica spre NULL). In cazul in care degetul nu este pozitionat
+  pe ultimul nod , putem efectua operatia , actualizand pozitia
+  curenta ca fiind urmatorul nod.In caz contrar , vom insera 
+  un nod nou la finalul listei ce va contine caracterul '#'.
+  -> Daca operatia este MOVE_LEFT , verificam daca ne 
+  aflam deja pe primul nod al benzii (adica elementul precedent 
+  este chiar santinela) . In cazul in care nu ne aflam
+  pe primul nod al benzii , comanda se efectueaza si 
+  pozitia curenta se actualizeaza , mutand degetul 
+  pe nodul precedent. In caz contrar , nu se intampla nimic.
+
+  La final , eliminam elementul/comanda din coada , apeland
+functia dequeue().
+  De asemenea , pentru a tine evidenta comenziilor MOVE_RIGHT,
+ MOVE_LEFT in stivele de UNDO si REDO , la intalnirea unei 
+astfel de comenzi am adaugat in stiva un pointer la pozitia
+curenta din banda prin apelarea comenzii push() ,
+ inainte de a efectua MOVE_RIGT sau MOVE_LEFT.
+  Daca operatia este WRITE , am golit stivele de UNDO si REDO.
+
+  insertRIGHT -> insereaza un caracter
+ in dreapta pozitiei degetului si actualizeaza pozitia acestuia.
+  insertLEFT -> insereaza un caracter
+ in stanga pozitiei degetuluisi actualizeaza pozitia acestuia.
+  insertAtEnd -> insereaza un nod
+la finalul listei si actualizraza pozitia degetului pe noul nod
+inserat.
+  moveLeftChar -> cauta un caracter la stanga , cautarea 
+incepand de la pozitia curenta a degetului si actualizeaza 
+pozitia degetului pe nodul ce contine caracterul cautat.
+Daca caracterul nu este gasit , se afiseaza "ERROR".
+  moveRightChar -> cauta un caracter la dreapta , 
+cautarea incepand de la pozitia curenta a degetului si actualizeaza 
+pozitia degetului pe nodul ce contine caracterul cautat.
+Daca caracterul nu este gasit , se insereaza un nod nou la
+finalul benzii , ce contine caracterul '#' si se modifica 
+pozitia degetului pe acest nod nou inserat.
+  printList -> afiseaza intreaga lista dublu inlantuita (banda) 
+si marcheaza pozitia degetului cu bare verticale.
+  printCurr -> afiseaza elementul curent(indicat de catre deget).
+  freeList -> elibereaza memoria alocata pe heap pentru 
+lista dublu inlantuita(banda).
+
+  In functia main am inceput prin a initializa coada pentru 
+operatiile de tip UPDATE , a benzii impreuna cu degetul
+si santinela , si a stivelor pentru operatiile UNDO si REDO
+si am deschis fisierele pentru citire si scriere .
+  Am citit mai intai numarul de operatii si am inceput
+iteratia , verificand ce fel de operatie se afla in 
+buffer .Daca operatia este de tip UPDATE , am adaugat-o 
+in coada apeland functia 'enqueue' , precum si caracaterul
+(acolo unde este cazul) , iar in cazul in care operatia
+nu necesita citirea unui caracter la final , 
+am apelat functia de adugare in coada folosind 
+caracterul null. 
+  Daca operatia este EXECUTE , am apelat functia 'execute'.
+
+  Daca operatia este de tip QUERY , am apelat ,dupa caz,
+functia 'printList' pentru a afisa intreaga lista , 
+sau 'printCurr',pentru a afisa caracterul curent.
+
+  Daca operatia este UNDO , am extras pointerul retinut
+in varful stivei de UNDO ,am adaugat pointerul
+catre pozitia curenta in stiva de REDO si am actualizat
+pozitia degetului pentru a indica catre pointerul extras
+din stiva. La final , am eliminat elementul de pe 
+stiva de UNDO.
+
+  Daca operatia este REDO , am extras pointerul retinut
+in varful stivei de REDO , am adaugat pointerul
+catre pozitia curenta in stiva de UNDO si am actualizat
+pozitia degetului pentru a indica catre pointerul extras
+din stiva de REDO.La final , am elimindat elementul de 
+pe stiva de REDO.
+
+La finalul programului am inchis fisierele si am 
+eliberat memoria alocata pe heap pentru stive , banda 
+si coada .
+
+
+
+
+
+
+
+
+
+
